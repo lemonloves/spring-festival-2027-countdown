@@ -1,5 +1,5 @@
 (function () {
-  const targetTimestamp = new Date("2027-01-25T16:00:00Z").getTime(); // 北京时间 2027-01-26 00:00:00
+  const targetTimestamp = new Date("2027-02-05T16:00:00Z").getTime(); // 北京时间 2027-02-06 00:00:00
 
   const daysEl = document.getElementById("days");
   const hoursEl = document.getElementById("hours");
