@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>2027 春节倒计时 · 迎接丁未新春</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="2027 年春节（丁未年正月初一）倒计时，红金新春氛围、烟花动效与灯笼摇摆，陪你一起迎接新年。"
+    />
+    <meta name="theme-color" content="#7f1d1d" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Noto Serif SC", "system-ui", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+              display: ["Ma Shan Zheng", "Noto Serif SC", "system-ui", "serif"],
+            },
+            colors: {
+              spring: {
+                red: "#7f1d1d",
+                redDeep: "#450a0a",
+                gold: "#facc15",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons (optional, for small glyphs) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="min-h-screen bg-spring-redDeep text-red-50 antialiased font-sans">
+    <div class="page-bg relative min-h-screen overflow-hidden">
+      <!-- 背景烟花画布 -->
+      <canvas
+        id="fireworksCanvas"
+        class="fixed inset-0 z-0 pointer-events-none"
+        aria-hidden="true"
+      ></canvas>
+
+      <!-- 顶部纹理遮罩 -->
+      <div class="texture-overlay" aria-hidden="true"></div>
+
+      <!-- 主内容 -->
+      <div class="relative z-10 flex min-h-screen flex-col">
+        <!-- 顶部导航 / 标题 -->
+        <header class="container mx-auto flex items-center justify-between px-4 pt-6 pb-4">
+          <div class="flex items-center gap-3">
+            <img
+              src="fu-gold.png"
+              alt="金色福字装饰图标"
+              class="hidden h-10 w-10 drop-shadow-gold sm:block"
+              loading="lazy"
+            />
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-red-100/80">
+                Spring Festival 2027
+              </p>
+              <h1 class="main-title text-2xl font-bold text-amber-200 sm:text-3xl">
+                2027 春节倒计时
+              </h1>
+            </div>
+          </div>
+          <div class="hidden items-center gap-3 text-xs text-amber-100/80 md:flex">
+            <span
+              class="inline-flex items-center gap-2 rounded-full border border-red-400/50 bg-red-900/60 px-3 py-1"
+            >
+              <span class="h-2 w-2 animate-pulse rounded-full bg-amber-300"></span>
+              <span>目标：2027-01-26 00:00 · 北京时间（Asia/Shanghai）</span>
+            </span>
+          </div>
+        </header>
+
+        <main class="flex-1">
+          <!-- Hero + 倒计时主卡 -->
+          <section
+            class="container mx-auto grid items-center gap-10 px-4 pb-12 pt-2 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
+          >
+            <!-- 左侧：文案 + 倒计时 -->
+            <div class="space-y-6">
+              <div
+                class="inline-flex items-center gap-2 rounded-full border border-amber-300/80 bg-red-900/70 px-3 py-1 text-[11px] text-amber-100/90 sm:text-xs"
+              >
+                <span class="material-symbols-outlined text-sm text-amber-200">sparkles</span>
+                <span>丁未年 正月初一 · 春节跨年倒计时</span>
+              </div>
+
+              <h2
+                class="hero-heading font-display text-3xl font-bold leading-tight text-amber-100 sm:text-4xl lg:text-5xl"
+              >
+                和 2027 的第一声鞭炮，<br class="hidden sm:inline" />
+                一起迎接新春的第一秒
+              </h2>
+
+              <p class="max-w-xl text-sm text-red-100/90 sm:text-base">
+                页面以北京时间为基准，精确到秒地记录与 2027 年春节（农历丁未年正月初一）之间的每一刻。
+                红与金交织的背景、烟花与灯笼动效，将等待新年的过程变成一场沉浸式的仪式感体验。
+              </p>
+
+              <section
+                id="countdown-card"
+                class="glass-card relative max-w-xl"
+                aria-label="2027 年春节倒计时"
+              >
+                <div class="mb-4 flex items-center justify-between gap-4">
+                  <div>
+                    <p class="text-[10px] uppercase tracking-[0.22em] text-amber-100/70">
+                      Countdown
+                    </p>
+                    <p class="mt-1 text-base font-semibold text-amber-200 sm:text-lg">
+                      距离 2027 年春节还有
+                    </p>
+                  </div>
+                  <img
+                    src="fu-papercut.jpg"
+                    alt="红色剪纸福字新春装饰"
+                    class="hidden h-16 w-16 rounded-full object-cover shadow-gold sm:block"
+                    loading="lazy"
+                  />
+                </div>
+
+                <div class="grid grid-cols-4 gap-2 sm:gap-4" role="group" aria-label="距离春节的时间">
+                  <div class="time-segment" aria-label="剩余天数">
+                    <div id="days" class="time-number">000</div>
+                    <div class="time-label">天</div>
+                  </div>
+                  <div class="time-segment" aria-label="剩余小时数">
+                    <div id="hours" class="time-number">00</div>
+                    <div class="time-label">时</div>
+                  </div>
+                  <div class="time-segment" aria-label="剩余分钟数">
+                    <div id="minutes" class="time-number">00</div>
+                    <div class="time-label">分</div>
+                  </div>
+                  <div class="time-segment" aria-label="剩余秒数">
+                    <div id="seconds" class="time-number">00</div>
+                    <div class="time-label">秒</div>
+                  </div>
+                </div>
+
+                <!-- 无障碍文案，用于读屏播报 -->
+                <p
+                  id="countdown-accessible"
+                  class="sr-only"
+                  aria-live="polite"
+                ></p>
+
+                <p
+                  id="sub-countdown"
+                  class="mt-4 text-[11px] text-red-100/80 sm:text-xs"
+                >
+                  倒计时以北京时间（Asia/Shanghai）为准，并自动适配不同设备的屏幕与动效表现。
+                </p>
+              </section>
+            </div>
+
+            <!-- 右侧：灯笼 + 祥云 + 特性卡片 -->
+            <aside class="relative mt-4 lg:mt-0" aria-hidden="false">
+              <div class="pointer-events-none" aria-hidden="true">
+                <div class="lantern-group">
+                  <img
+                    src="lantern-main.jpg"
+                    alt="红色新春灯笼装饰"
+                    class="lantern lantern-left"
+                    loading="lazy"
+                  />
+                  <img
+                    src="lantern-main.jpg"
+                    alt="红色新春灯笼装饰"
+                    class="lantern lantern-right"
+                    loading="lazy"
+                  />
+                </div>
+
+                <div class="cloud-group">
+                  <img
+                    src="clouds-gold.png"
+                    alt="金色祥云纹样装饰"
+                    class="cloud cloud-bottom"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+
+              <div class="feature-floating-card">
+                <h3 class="mb-2 text-sm font-semibold text-amber-100">
+                  新春氛围 · 轻盈动效
+                </h3>
+                <ul class="space-y-1.5 text-xs text-red-100/90">
+                  <li>· 背景烟花粒子持续绽放，倒计时结束时自动强化。</li>
+                  <li>· 灯笼轻摇、祥云缓慢流动，营造自然的空间层次。</li>
+                  <li>· 移动端自动降级动效，兼顾性能与观感。</li>
+                </ul>
+              </div>
+            </aside>
+          </section>
+
+          <!-- 特色 / 说明区 -->
+          <section class="container mx-auto px-4 pb-12">
+            <div class="section-card">
+              <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <h3 class="section-title">页面亮点</h3>
+                  <p class="section-subtitle">
+                    不止是一个数字计时器，而是一整套迎接 2027 丁未新春的视觉体验。
+                  </p>
+                </div>
+                <div class="inline-flex items-center gap-2 rounded-full border border-amber-300/60 bg-red-900/70 px-3 py-1 text-[11px] text-amber-100/90">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-300"></span>
+                  <span>已为手机与桌面屏幕优化展示</span>
+                </div>
+              </div>
+
+              <div class="grid gap-4 md:grid-cols-3">
+                <article class="feature-card">
+                  <h4>精确到秒的春节时间轴</h4>
+                  <p>
+                    目标锁定 2027-01-26 00:00（北京时间），跨时区访问时仍以
+                    Asia/Shanghai 为准，确保迎新节点统一。
+                  </p>
+                </article>
+                <article class="feature-card">
+                  <h4>沉浸式红金新春氛围</h4>
+                  <p>
+                    红色渐变背景搭配金色福字、祥云与剪纸装饰，配合动态光影与烟花粒子，让等待的过程充满仪式感。
+                  </p>
+                </article>
+                <article class="feature-card">
+                  <h4>响应式与可访问性友好</h4>
+                  <p>
+                    在窄屏设备上自动居中放大关键信息，对支持
+                    prefers-reduced-motion 的设备减少动效，并为图片提供清晰的
+                    alt 文案。
+                  </p>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- 丁未年小贴士 / 使用提示区 -->
+          <section class="container mx-auto px-4 pb-16">
+            <div class="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+              <div class="section-card subtle-card">
+                <h3 class="section-title">丁未年 · 新春小贴士</h3>
+                <p class="section-subtitle">
+                  把想说的话、想见的人、想完成的计划，都交给这段倒计时慢慢靠近。
+                </p>
+                <ul class="mt-4 space-y-2 text-sm text-red-100/90">
+                  <li>· 将页面加入收藏夹，随时打开看一眼离春节还有多久。</li>
+                  <li>· 在跨年当天保持页面开启，等待 0 点烟花与祝福弹幕同时绽放。</li>
+                  <li>· 推荐在光线稍暗的环境下观看，红金色调更有包裹感。</li>
+                </ul>
+              </div>
+
+              <div class="section-card subtle-card">
+                <h3 class="section-title">动效与性能说明</h3>
+                <ul class="mt-4 space-y-2 text-sm text-red-100/90">
+                  <li>· 桌面端提供更丰富的烟花密度与祝福弹幕展示。</li>
+                  <li>· 移动端会适当降低粒子数量，保证流畅度与电量消耗。</li>
+                  <li>
+                    · 如果系统开启“减少动态效果”（prefers-reduced-motion），页面将自动弱化动画，仅保留关键信息与轻微光影。
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <!-- 祝福弹幕层 -->
+        <div
+          id="blessing-layer"
+          class="pointer-events-none fixed inset-0 z-20 overflow-hidden"
+          aria-hidden="true"
+        ></div>
+
+        <!-- 页脚 -->
+        <footer
+          class="relative z-10 border-t border-red-500/40 bg-red-950/80 px-4 py-4 text-[11px] text-red-100/80 backdrop-blur-md sm:text-xs"
+        >
+          <div class="container mx-auto flex flex-col justify-between gap-2 sm:flex-row">
+            <p>© 2026 迎接 2027 丁未新春 · 春节倒计时页面</p>
+            <p>倒计时仅供参考，以北京时间官方历法为准。</p>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
